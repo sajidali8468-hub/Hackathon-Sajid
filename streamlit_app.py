@@ -335,7 +335,7 @@ def render_mock_homepage_html(brand: dict) -> str:
           onclick="
             const root = window.parent.document;
             const trigger = Array.from(root.querySelectorAll('button')).find(
-              (button) => button.textContent.trim() === 'Start the story'
+              (button) => button.textContent.trim() === 'Open Summary Overlay'
             );
             if (trigger) trigger.click();
           "
@@ -387,6 +387,32 @@ def render_scroll_to_target(target: str) -> None:
         height=0,
     )
     st.session_state.pending_scroll_target = ""
+
+
+def hide_summary_trigger() -> None:
+    components.html(
+        """
+        <script>
+          const root = window.parent.document;
+          const button = Array.from(root.querySelectorAll('button')).find(
+            (node) => node.textContent.trim() === 'Open Summary Overlay'
+          );
+          if (button) {
+            const wrapper = button.closest('[data-testid="stButton"]') || button.parentElement;
+            if (wrapper) {
+              wrapper.style.position = 'fixed';
+              wrapper.style.left = '-9999px';
+              wrapper.style.top = '-9999px';
+              wrapper.style.width = '1px';
+              wrapper.style.height = '1px';
+              wrapper.style.opacity = '0';
+              wrapper.style.pointerEvents = 'none';
+            }
+          }
+        </script>
+        """,
+        height=0,
+    )
 
 
 def render_story_overlay(brand: dict) -> None:
@@ -532,9 +558,10 @@ with center:
         </section>
         """
     )
-    st.html('<div class="story-trigger-anchor" aria-hidden="true"></div>')
-    if st.button("Start the story", key="start_story_overlay", use_container_width=False):
+    st.html('<div id="story-trigger-anchor" class="story-trigger-anchor" aria-hidden="true"></div>')
+    if st.button("Open Summary Overlay", key="start_story_overlay", use_container_width=False):
         open_story_overlay()
+    hide_summary_trigger()
 
     output_left, output_right = st.columns(2, gap="medium")
     with output_left:
