@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from base64 import b64encode
 from html import escape
+import mimetypes
 import os
 from pathlib import Path
 from time import perf_counter
@@ -13,6 +15,7 @@ from core.engine import BrandGenerationError, generate_brand_identity
 
 BASE_DIR = Path(__file__).resolve().parent
 STREAMLIT_CSS = BASE_DIR / "static" / "streamlit.css"
+BACKGROUND_IMAGE = BASE_DIR / "Dubai.jpg"
 
 
 st.set_page_config(
@@ -33,6 +36,16 @@ def load_streamlit_secrets() -> None:
             os.environ[key] = str(value)
 
 
+def build_background_data_uri(image_path: Path) -> str:
+    if not image_path.exists():
+        return ""
+    mime_type, _ = mimetypes.guess_type(image_path.name)
+    if not mime_type:
+        mime_type = "image/jpeg"
+    encoded = b64encode(image_path.read_bytes()).decode("ascii")
+    return f"data:{mime_type};base64,{encoded}"
+
+
 def render_css(brand: dict | None = None) -> None:
     palette = (brand or {}).get(
         "palette",
@@ -43,6 +56,7 @@ def render_css(brand: dict | None = None) -> None:
         {"heading": "Cormorant Garamond", "body": "Manrope"},
     )
     app_css = STREAMLIT_CSS.read_text(encoding="utf-8")
+    background_data_uri = build_background_data_uri(BACKGROUND_IMAGE)
     st.html(
         f"""
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,6 +69,7 @@ def render_css(brand: dict | None = None) -> None:
             --brand-accent: {palette["accent"]};
             --heading-font: "{typography["heading"]}", Georgia, serif;
             --body-font: "{typography["body"]}", system-ui, sans-serif;
+            --page-background-image: url("{background_data_uri}");
           }}
           {app_css}
         </style>
