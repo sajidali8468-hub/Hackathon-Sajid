@@ -6,6 +6,7 @@ from pathlib import Path
 from time import perf_counter
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 from core.engine import BrandGenerationError, generate_brand_identity
 
@@ -171,6 +172,43 @@ def derive_outputs(brand: dict) -> dict:
     }
 
 
+def build_story_map(brand: dict) -> list[dict[str, str]]:
+    pillars = brand.get("social_strategy", [])
+    discover = pillars[0] if pillars else "sharp category storytelling"
+    proof = pillars[3] if len(pillars) > 3 else "proof-led brand moments"
+    education = pillars[4] if len(pillars) > 4 else "useful educational content"
+    return [
+        {
+            "title": "How customer discovers brand",
+            "body": (
+                f'{brand["brand_name"]} gets discovered through {lower_start(discover)}, '
+                "clear positioning, and content that makes the audience feel seen quickly."
+            ),
+        },
+        {
+            "title": "Why they trust it",
+            "body": (
+                f'The trust comes from a voice that feels {lower_start(brand["tone"])}, '
+                "plus visual consistency that makes the brand feel intentional and credible."
+            ),
+        },
+        {
+            "title": "Why they buy",
+            "body": (
+                f'They buy because "{brand["tagline"]}" gives a fast, believable reason to act, '
+                "supported by a clear offer and grounded proof."
+            ),
+        },
+        {
+            "title": "Why they return",
+            "body": (
+                f"They return when the brand keeps delivering through {lower_start(proof)} and "
+                f"{lower_start(education)}, turning first interest into long-term preference."
+            ),
+        },
+    ]
+
+
 def generation_steps(status: str = "ready", detail: str = "") -> list[dict[str, str]]:
     if status == "complete":
         return [
@@ -235,6 +273,25 @@ def initialize_state() -> None:
         st.session_state.outputs = derive_outputs(st.session_state.brand)
     if "generation_steps" not in st.session_state:
         st.session_state.generation_steps = generation_steps()
+    if "active_output" not in st.session_state:
+        st.session_state.active_output = ""
+    if "pending_scroll_target" not in st.session_state:
+        st.session_state.pending_scroll_target = ""
+    if "story_overlay_open" not in st.session_state:
+        st.session_state.story_overlay_open = False
+
+
+def close_story_overlay() -> None:
+    st.session_state.story_overlay_open = False
+
+
+def open_story_overlay() -> None:
+    st.session_state.story_overlay_open = True
+
+
+def activate_output(target: str) -> None:
+    st.session_state.active_output = target
+    st.session_state.pending_scroll_target = target
 
 
 def generate(description: str) -> dict:
@@ -278,13 +335,82 @@ def render_mock_homepage_html(brand: dict) -> str:
     """
 
 
-def render_text_card(title: str, body: str, extra_class: str = "") -> None:
-    card_class = f"output-card {extra_class}".strip()
+def render_text_card(
+    title: str,
+    body: str,
+    card_id: str,
+    active_target: str = "",
+    extra_class: str = "",
+) -> None:
+    active_class = "output-card--active" if active_target == card_id else ""
+    pulse_class = "output-card--pulse" if active_target == card_id else ""
+    card_class = f"output-card {extra_class} {active_class} {pulse_class}".strip()
     st.html(
         f"""
-        <section class="{card_class}">
+        <section id="{escape(card_id)}" class="{card_class}">
           <p class="overline">{escape(title)}</p>
           <p>{escape(body)}</p>
+        </section>
+        """
+    )
+
+
+def render_scroll_to_target(target: str) -> None:
+    if not target:
+        return
+    components.html(
+        f"""
+        <script>
+          const targetId = {target!r};
+          const root = window.parent.document;
+          const node = root.getElementById(targetId);
+          if (node) {{
+            node.scrollIntoView({{ behavior: "smooth", block: "center" }});
+            node.classList.remove("output-card--pulse");
+            void node.offsetWidth;
+            node.classList.add("output-card--pulse");
+          }}
+        </script>
+        """,
+        height=0,
+    )
+    st.session_state.pending_scroll_target = ""
+
+
+def render_story_overlay(brand: dict) -> None:
+    story_items = []
+    for item in build_story_map(brand):
+        story_items.append(
+            f"""
+            <article class="story-card">
+              <p class="overline">{escape(item["title"])}</p>
+              <p>{escape(item["body"])}</p>
+            </article>
+            """
+        )
+
+    st.html(
+        f"""
+        <section class="story-overlay">
+          <div class="story-overlay__backdrop"></div>
+          <div class="story-overlay__panel">
+            <div class="story-loader">
+              <div class="story-loader__dots">
+                <span></span><span></span><span></span>
+              </div>
+              <div>
+                <p class="overline">AI writes</p>
+                <h2 class="story-overlay__title">{escape(brand["brand_name"])} Story Engine</h2>
+                <p class="story-overlay__lede">
+                  Turning the brand identity into a customer journey your team can use in pitches,
+                  landing pages, and launch messaging.
+                </p>
+              </div>
+            </div>
+            <div class="story-grid">
+              {"".join(story_items)}
+            </div>
+          </div>
         </section>
         """
     )
@@ -304,6 +430,9 @@ with st.sidebar:
     st.metric("Latency", f'{st.session_state.brand.get("latency_ms", 0)} ms')
     st.metric("Tokens", st.session_state.brand.get("token_count", 0))
     st.metric("Source", st.session_state.brand.get("source", "fallback-demo"))
+    if st.session_state.story_overlay_open:
+        st.divider()
+        st.button("Close Story Overlay", on_click=close_story_overlay, use_container_width=True)
     st.divider()
     st.markdown("### Working Outputs")
     st.write("Generate Identity")
@@ -334,6 +463,8 @@ with left:
             with st.spinner("Designing the identity..."):
                 brand = generate(description)
             set_brand_state(brand)
+            st.session_state.active_output = ""
+            st.session_state.story_overlay_open = False
         except BrandGenerationError as exc:
             st.session_state.generation_steps = generation_steps("error", str(exc))
             st.error(str(exc))
@@ -349,14 +480,17 @@ with left:
         outputs = dict(st.session_state.outputs)
         outputs["brand_bio"] = build_brand_bio(st.session_state.brand)
         st.session_state.outputs = outputs
+        activate_output("brand-bio-card")
     if caption_clicked:
         outputs = dict(st.session_state.outputs)
         outputs["launch_caption"] = build_launch_caption(st.session_state.brand)
         st.session_state.outputs = outputs
+        activate_output("launch-caption-card")
     if taglines_clicked:
         outputs = dict(st.session_state.outputs)
         outputs["taglines"] = build_taglines(st.session_state.brand)
         st.session_state.outputs = outputs
+        activate_output("taglines-card")
 
     metrics_top = st.columns(2, gap="small")
     with metrics_top[0]:
@@ -370,6 +504,7 @@ with center:
     brand = st.session_state.brand
     outputs = st.session_state.outputs
     palette = brand["palette"]
+    active_output = st.session_state.active_output
 
     st.html(
         f"""
@@ -385,23 +520,38 @@ with center:
         </section>
         """
     )
+    if st.button("Start the story", key="start_story_overlay", use_container_width=False):
+        open_story_overlay()
 
     output_left, output_right = st.columns(2, gap="medium")
     with output_left:
-        render_text_card("Brand Bio", outputs["brand_bio"])
+        render_text_card(
+            "Brand Bio",
+            outputs["brand_bio"],
+            "brand-bio-card",
+            active_output,
+        )
     with output_right:
-        render_text_card("Launch Caption", outputs["launch_caption"])
+        render_text_card(
+            "Launch Caption",
+            outputs["launch_caption"],
+            "launch-caption-card",
+            active_output,
+        )
 
     tagline_markup = "".join(f"<li>{escape(item)}</li>" for item in outputs["taglines"])
+    tagline_active = "output-card--active" if active_output == "taglines-card" else ""
+    tagline_pulse = "output-card--pulse" if active_output == "taglines-card" else ""
     st.html(
         f"""
-        <section class="output-card output-card--wide">
+        <section id="taglines-card" class="output-card output-card--wide {tagline_active} {tagline_pulse}">
           <p class="overline">Tagline Variations</p>
           <ul class="output-list">{tagline_markup}</ul>
         </section>
         """
     )
 
+    render_scroll_to_target(st.session_state.pending_scroll_target)
     render_step_flow(st.session_state.generation_steps)
 
 with right:
@@ -434,11 +584,34 @@ with right:
 
     side_left, side_right = st.columns(2, gap="medium")
     with side_left:
-        render_text_card("Messaging Style", outputs["messaging_style"])
-        render_text_card("Font Pairing", outputs["font_pairing"], "tight-card")
+        render_text_card("Messaging Style", outputs["messaging_style"], "messaging-style-card")
+        render_text_card(
+            "Font Pairing",
+            outputs["font_pairing"],
+            "font-pairing-card",
+            extra_class="tight-card",
+        )
     with side_right:
-        render_text_card("Ad Headline", outputs["ad_headline"])
-        render_text_card("Grounding", get_grounding_label(brand), "tight-card")
+        render_text_card("Ad Headline", outputs["ad_headline"], "ad-headline-card")
+        render_text_card(
+            "Grounding",
+            get_grounding_label(brand),
+            "grounding-card",
+            extra_class="tight-card",
+        )
 
-    render_text_card("Positioning Note", outputs["positioning_note"], "output-card--wide")
-    render_text_card("Moodboard Direction", outputs["moodboard"], "tight-card")
+    render_text_card(
+        "Positioning Note",
+        outputs["positioning_note"],
+        "positioning-note-card",
+        extra_class="output-card--wide",
+    )
+    render_text_card(
+        "Moodboard Direction",
+        outputs["moodboard"],
+        "moodboard-card",
+        extra_class="tight-card",
+    )
+
+if st.session_state.story_overlay_open:
+    render_story_overlay(st.session_state.brand)
