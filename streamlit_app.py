@@ -371,8 +371,6 @@ with left:
     st.metric("Grounding", get_grounding_label(st.session_state.brand))
 
 with center:
-    render_step_flow(st.session_state.generation_steps)
-
     brand = st.session_state.brand
     outputs = st.session_state.outputs
     palette = brand["palette"]
@@ -407,6 +405,8 @@ with center:
         </section>
         """
     )
+
+    render_step_flow(st.session_state.generation_steps)
 
 with right:
     brand = st.session_state.brand
