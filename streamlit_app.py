@@ -2,11 +2,16 @@ from __future__ import annotations
 
 from html import escape
 import os
+from pathlib import Path
 from time import perf_counter
 
 import streamlit as st
 
 from core.engine import BrandGenerationError, generate_brand_identity
+
+
+BASE_DIR = Path(__file__).resolve().parent
+STREAMLIT_CSS = BASE_DIR / "static" / "streamlit.css"
 
 
 st.set_page_config(
@@ -36,6 +41,7 @@ def render_css(brand: dict | None = None) -> None:
         "typography",
         {"heading": "Cormorant Garamond", "body": "Manrope"},
     )
+    app_css = STREAMLIT_CSS.read_text(encoding="utf-8")
     st.html(
         f"""
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,138 +55,7 @@ def render_css(brand: dict | None = None) -> None:
             --heading-font: "{typography["heading"]}", Georgia, serif;
             --body-font: "{typography["body"]}", system-ui, sans-serif;
           }}
-
-          .stApp {{
-            background: #f5f5f7;
-            color: #18181b;
-          }}
-
-          [data-testid="stSidebar"] {{
-            background: #ffffff;
-            border-right: 1px solid #dedee3;
-          }}
-
-          .block-container {{
-            max-width: 1440px;
-            padding-top: 2rem;
-            padding-bottom: 2rem;
-          }}
-
-          h1, h2, h3, .brand-heading {{
-            font-family: var(--heading-font);
-            letter-spacing: 0;
-          }}
-
-          .hero-title {{
-            margin: 0;
-            max-width: 8ch;
-            font-family: var(--heading-font);
-            font-size: clamp(4rem, 10vw, 8rem);
-            font-weight: 700;
-            line-height: .92;
-          }}
-
-          .lede {{
-            max-width: 38rem;
-            color: #4b5563;
-            font-family: var(--body-font);
-            font-size: 1.08rem;
-            line-height: 1.65;
-          }}
-
-          .overline {{
-            margin: 0 0 .65rem;
-            color: #6b7280;
-            font-family: var(--body-font);
-            font-size: .76rem;
-            font-weight: 700;
-            letter-spacing: 0;
-            text-transform: uppercase;
-          }}
-
-          .bento {{
-            border: 1px solid #dedee3;
-            border-radius: 8px;
-            background: rgba(255,255,255,.76);
-            padding: 1.25rem;
-          }}
-
-          .mock-homepage {{
-            overflow: hidden;
-            min-height: 560px;
-            border: 1px solid color-mix(in srgb, var(--brand-primary) 22%, transparent);
-            border-radius: 8px;
-            background: var(--brand-secondary);
-            color: var(--brand-primary);
-          }}
-
-          .mock-nav {{
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            min-height: 72px;
-            background: var(--brand-primary);
-            color: var(--brand-secondary);
-            padding: 0 26px;
-          }}
-
-          .mock-nav strong {{
-            font-family: var(--heading-font);
-            font-size: 1.35rem;
-          }}
-
-          .mock-nav span {{
-            color: var(--brand-accent);
-            font-weight: 800;
-          }}
-
-          .mock-hero {{
-            display: grid;
-            align-content: center;
-            min-height: 488px;
-            padding: 44px;
-          }}
-
-          .mock-hero h2 {{
-            max-width: 11ch;
-            margin: 0;
-            color: var(--brand-primary);
-            font-family: var(--heading-font);
-            font-size: clamp(3rem, 6vw, 6.4rem);
-            line-height: .96;
-          }}
-
-          .mock-hero p {{
-            max-width: 34rem;
-            font-family: var(--body-font);
-            line-height: 1.65;
-          }}
-
-          .mock-cta {{
-            display: inline-flex;
-            align-items: center;
-            width: max-content;
-            min-height: 48px;
-            margin-top: .5rem;
-            border-radius: 8px;
-            background: var(--brand-accent);
-            color: var(--brand-secondary);
-            padding: 0 18px;
-            font-family: var(--body-font);
-            font-weight: 800;
-          }}
-
-          .swatch-row {{
-            display: flex;
-            gap: .55rem;
-          }}
-
-          .swatch {{
-            width: 42px;
-            height: 42px;
-            border: 1px solid rgba(0,0,0,.15);
-            border-radius: 50%;
-          }}
+          {app_css}
         </style>
         """
     )
