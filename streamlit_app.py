@@ -129,9 +129,10 @@ with st.sidebar:
     for item in sanity:
         st.write(item)
 
-left, right = st.columns([0.72, 1.28], gap="large")
+left, right = st.columns([0.9, 1.1], gap="large")
 
 with left:
+    st.html('<section class="panel hero-panel">')
     st.html('<p class="overline">Prompt-to-Product</p>')
     st.html('<h1 class="hero-title">Brand Engine</h1>')
     st.html(
@@ -156,10 +157,12 @@ with left:
             st.error(str(exc))
         except Exception as exc:
             st.error(f"Generation failed: {exc}")
+    st.html("</section>")
 
 with right:
     brand = st.session_state.brand
     palette = brand["palette"]
+    st.html('<section class="panel preview-shell">')
     st.html('<p class="overline">Live Preview</p>')
     st.html(f'<h2 class="brand-heading">{escape(brand["brand_name"])}</h2>')
     st.html(
@@ -172,7 +175,7 @@ with right:
         """
     )
 
-    preview_col, detail_col = st.columns([1.25, 0.75], gap="medium")
+    preview_col, detail_col = st.columns([1.4, 0.8], gap="medium")
     with preview_col:
         render_mock_homepage(brand)
     with detail_col:
@@ -190,7 +193,7 @@ with right:
 
         st.html(
             f"""
-            <section class="bento" style="margin-top: .85rem;">
+            <section class="bento compact-card">
               <p class="overline">Grounding</p>
               <p>{escape(brand.get("grounding", {}).get("profile", "General Founder Brand"))}</p>
             </section>
@@ -199,9 +202,10 @@ with right:
 
         st.html(
             f"""
-            <section class="bento" style="margin-top: .85rem;">
+            <section class="bento compact-card">
               <p class="overline">Voice Guide</p>
               <p>{escape(brand["tone"])}</p>
             </section>
             """
         )
+    st.html("</section>")

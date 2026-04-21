@@ -1,5 +1,7 @@
 .stApp {
-  background: #f5f5f7;
+  background:
+    radial-gradient(circle at top left, rgba(138, 59, 29, 0.07), transparent 24%),
+    linear-gradient(180deg, #fafafc 0%, #f5f5f7 100%);
   color: #18181b;
 }
 
@@ -9,9 +11,13 @@
 }
 
 .block-container {
-  max-width: 1440px;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  max-width: 1380px;
+  padding-top: 2.2rem;
+  padding-bottom: 2.2rem;
+}
+
+[data-testid="column"] {
+  min-width: 0;
 }
 
 h1,
@@ -22,45 +28,82 @@ h3,
   letter-spacing: 0;
 }
 
+.panel {
+  border: 1px solid rgba(222, 222, 227, 0.9);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 18px 48px rgba(24, 24, 27, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.hero-panel {
+  padding: 1.7rem 1.5rem 1.5rem;
+}
+
+.preview-shell {
+  padding: 1.35rem;
+}
+
 .hero-title {
   margin: 0;
-  max-width: 8ch;
+  max-width: 6ch;
   font-family: var(--heading-font);
-  font-size: clamp(4rem, 10vw, 8rem);
+  font-size: clamp(3.3rem, 7vw, 5.6rem);
   font-weight: 700;
-  line-height: .92;
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.brand-heading {
+  margin: 0;
+  font-size: clamp(2.2rem, 3.6vw, 3.8rem);
+  line-height: 0.96;
+  letter-spacing: -0.03em;
 }
 
 .lede {
-  max-width: 38rem;
+  max-width: 30rem;
   color: #4b5563;
   font-family: var(--body-font);
-  font-size: 1.08rem;
-  line-height: 1.65;
+  font-size: 1.02rem;
+  line-height: 1.72;
 }
 
 .overline {
-  margin: 0 0 .65rem;
+  margin: 0 0 0.65rem;
   color: #6b7280;
   font-family: var(--body-font);
-  font-size: .76rem;
-  font-weight: 700;
-  letter-spacing: 0;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.stForm {
+  margin-top: 1.3rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(222, 222, 227, 0.9);
 }
 
 .bento {
   border: 1px solid #dedee3;
-  border-radius: 8px;
-  background: rgba(255,255,255,.76);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.9);
   padding: 1.25rem;
+  box-shadow: 0 10px 24px rgba(24, 24, 27, 0.05);
+}
+
+.compact-card {
+  margin-top: 0.85rem;
 }
 
 .mock-homepage {
   overflow: hidden;
-  min-height: 560px;
+  min-height: 520px;
+  width: 100%;
   border: 1px solid color-mix(in srgb, var(--brand-primary) 22%, transparent);
-  border-radius: 8px;
+  border-radius: 22px;
   background: var(--brand-secondary);
   color: var(--brand-primary);
 }
@@ -69,6 +112,7 @@ h3,
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
   min-height: 72px;
   background: var(--brand-primary);
   color: var(--brand-secondary);
@@ -76,33 +120,42 @@ h3,
 }
 
 .mock-nav strong {
+  min-width: 0;
+  overflow: hidden;
   font-family: var(--heading-font);
   font-size: 1.35rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .mock-nav span {
   color: var(--brand-accent);
   font-weight: 800;
+  flex-shrink: 0;
 }
 
 .mock-hero {
   display: grid;
+  gap: 1rem;
   align-content: center;
-  min-height: 488px;
-  padding: 44px;
+  min-height: 448px;
+  padding: 34px;
 }
 
 .mock-hero h2 {
-  max-width: 11ch;
+  max-width: 8ch;
   margin: 0;
   color: var(--brand-primary);
   font-family: var(--heading-font);
-  font-size: clamp(3rem, 6vw, 6.4rem);
-  line-height: .96;
+  font-size: clamp(2.3rem, 4vw, 4.6rem);
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
 }
 
 .mock-hero p {
-  max-width: 34rem;
+  max-width: 28rem;
+  margin: 0;
   font-family: var(--body-font);
   line-height: 1.65;
 }
@@ -112,8 +165,8 @@ h3,
   align-items: center;
   width: max-content;
   min-height: 48px;
-  margin-top: .5rem;
-  border-radius: 8px;
+  margin-top: 0.25rem;
+  border-radius: 999px;
   background: var(--brand-accent);
   color: var(--brand-secondary);
   padding: 0 18px;
@@ -123,23 +176,60 @@ h3,
 
 .swatch-row {
   display: flex;
-  gap: .55rem;
+  gap: 0.55rem;
+  margin: 0.8rem 0 1.2rem;
 }
 
 .swatch {
   width: 42px;
   height: 42px;
-  border: 1px solid rgba(0,0,0,.15);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 50%;
 }
 
+ol {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding-left: 1.35rem;
+}
+
+li {
+  line-height: 1.55;
+  color: #27272a;
+}
+
 @media (max-width: 900px) {
+  .block-container {
+    padding-top: 1rem;
+    padding-bottom: 1.2rem;
+  }
+
+  .hero-panel,
+  .preview-shell {
+    padding: 1.15rem;
+  }
+
+  .hero-title {
+    max-width: 100%;
+    font-size: clamp(2.8rem, 12vw, 4rem);
+  }
+
+  .brand-heading {
+    font-size: clamp(1.9rem, 8vw, 2.8rem);
+  }
+
   .mock-homepage {
-    min-height: 460px;
+    min-height: 430px;
   }
 
   .mock-hero {
-    min-height: 388px;
-    padding: 28px;
+    min-height: 350px;
+    padding: 24px;
+  }
+
+  .mock-hero h2 {
+    max-width: 100%;
+    font-size: clamp(2rem, 10vw, 3rem);
   }
 }
