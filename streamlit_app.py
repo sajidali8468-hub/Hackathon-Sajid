@@ -329,7 +329,19 @@ def render_mock_homepage_html(brand: dict) -> str:
         <p class="overline">Generated Brand System</p>
         <h2>{escape(brand["tagline"])}</h2>
         <p>{escape(brand["tone"])}</p>
-        <div class="mock-cta">Start the story</div>
+        <button
+          class="mock-cta mock-cta-button"
+          type="button"
+          onclick="
+            const root = window.parent.document;
+            const trigger = Array.from(root.querySelectorAll('button')).find(
+              (button) => button.textContent.trim() === 'Start the story'
+            );
+            if (trigger) trigger.click();
+          "
+        >
+          Start the story
+        </button>
       </div>
     </section>
     """
@@ -520,6 +532,7 @@ with center:
         </section>
         """
     )
+    st.html('<div class="story-trigger-anchor" aria-hidden="true"></div>')
     if st.button("Start the story", key="start_story_overlay", use_container_width=False):
         open_story_overlay()
 
