@@ -323,25 +323,11 @@ def render_mock_homepage_html(brand: dict) -> str:
     <section class="mock-homepage">
       <div class="mock-nav">
         <strong>{escape(brand["brand_name"])}</strong>
-        <span>Launch</span>
       </div>
       <div class="mock-hero">
         <p class="overline">Generated Brand System</p>
         <h2>{escape(brand["tagline"])}</h2>
         <p>{escape(brand["tone"])}</p>
-        <button
-          class="mock-cta mock-cta-button"
-          type="button"
-          onclick="
-            const root = window.parent.document;
-            const trigger = Array.from(root.querySelectorAll('button')).find(
-              (button) => button.textContent.trim() === 'Open Summary Overlay'
-            );
-            if (trigger) trigger.click();
-          "
-        >
-          Start the story
-        </button>
       </div>
     </section>
     """
