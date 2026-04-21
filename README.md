@@ -21,10 +21,13 @@ Add `GROQ_API_KEY` in Streamlit secrets. Local `.env` still works too.
 
 For local Streamlit secrets, duplicate `.streamlit/secrets.toml.example` as `.streamlit/secrets.toml` and paste your key there. Do not commit the real secrets file.
 
+The repo includes `runtime.txt` so Streamlit Cloud uses Python 3.12 instead of a newer runtime that may not have wheels for every dependency yet.
+
 ## Run With FastAPI
 
 ```powershell
 py -m pip install -r requirements.txt
+py -m pip install fastapi "uvicorn[standard]"
 py -m uvicorn app:app --reload
 ```
 
