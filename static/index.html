@@ -7,83 +7,390 @@
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
-    <main class="app-shell">
-      <section class="input-panel" aria-labelledby="appTitle">
-        <div>
-          <p class="overline">Prompt-to-Product</p>
-          <h1 id="appTitle">Brand Engine</h1>
-          <p class="lede">Describe a startup and generate a grounded visual identity with palette, typography, tone, and social strategy.</p>
+    <div class="site-bg" aria-hidden="true">
+      <div class="site-glow site-glow--one"></div>
+      <div class="site-glow site-glow--two"></div>
+      <div class="site-grid"></div>
+      <div class="particles">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <header class="topbar">
+      <a href="#" class="brand-lockup" aria-label="Brand Engine home">
+        <span class="brand-lockup__mark"></span>
+        <span class="brand-lockup__text">Brand Engine</span>
+      </a>
+
+      <nav class="topbar-nav" aria-label="Primary navigation">
+        <a href="#wizard">Generate</a>
+        <a href="#dashboard">Results</a>
+        <a href="#actions">Export</a>
+      </nav>
+
+      <a href="#wizard" class="topbar-cta">Start Now</a>
+    </header>
+
+    <main class="page-shell">
+      <section class="hero hero-card" id="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">AI Brand Operating System</p>
+          <h1>Turn one business idea into a powerful brand.</h1>
+          <p class="hero-subcopy">
+            Generate your brand name, voice, colors, launch copy, and social strategy in seconds.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#wizard" class="button button--primary">Generate My Brand</a>
+            <a href="#dashboard" class="button button--ghost">View Demo</a>
+          </div>
+
+          <ul class="hero-points" aria-label="Brand Engine features">
+            <li>AI-powered naming and messaging</li>
+            <li>Luxury-grade visual identity guidance</li>
+            <li>Launch content and social strategy in one flow</li>
+          </ul>
         </div>
 
-        <form id="brandForm" class="prompt-form">
-          <label for="description">Business description</label>
-          <textarea id="description" name="description" rows="8">A minimalist cafe in Dubai for founders who want quiet meetings, excellent coffee, and a refined local atmosphere.</textarea>
-          <button type="submit" id="generateButton">
-            <span>Generate Identity</span>
-            <span class="button-dot" aria-hidden="true"></span>
-          </button>
-        </form>
+        <div class="hero-preview glass-panel" aria-label="Preview of premium brand output">
+          <div class="hero-preview__header">
+            <div>
+              <p class="eyebrow">Live Brand Preview</p>
+              <h2 id="heroBrandName">Brand Engine</h2>
+            </div>
+            <div class="hero-swatches" aria-label="Preview brand colors">
+              <span id="primarySwatch"></span>
+              <span id="secondarySwatch"></span>
+              <span id="accentSwatch"></span>
+            </div>
+          </div>
 
-        <aside class="metrics-grid" aria-label="Generation metrics">
-          <div class="metric-card">
-            <span>Latency</span>
-            <strong id="latencyMetric">0 ms</strong>
+          <div class="hero-preview__canvas" id="mockHomepage">
+            <div class="mock-chip">Premium Identity System</div>
+            <h3 id="mockHeadline">Launch with a sharper first impression.</h3>
+            <p id="mockTone">
+              Elegant, high-conviction brand systems for founders who want clarity, speed, and presence.
+            </p>
+
+            <div class="hero-stats">
+              <article class="stat-card">
+                <span>Voice</span>
+                <strong id="brandName">Safa Table</strong>
+              </article>
+              <article class="stat-card">
+                <span>Positioning</span>
+                <strong id="groundingMetric">Food and Hospitality</strong>
+              </article>
+              <article class="stat-card">
+                <span>Latency</span>
+                <strong id="latencyMetric">0 ms</strong>
+              </article>
+            </div>
           </div>
-          <div class="metric-card">
-            <span>Tokens</span>
-            <strong id="tokenMetric">0</strong>
+        </div>
+      </section>
+
+      <section class="flow-grid">
+        <section class="wizard-section glass-panel" id="wizard" aria-labelledby="wizardTitle">
+          <div class="section-heading">
+            <p class="eyebrow">Guided Brand Builder</p>
+            <h2 id="wizardTitle">From raw idea to brand system in 4 precise steps.</h2>
+            <p>
+              Structured inputs create stronger outputs. Move through the flow and let Brand Engine compose your identity stack.
+            </p>
           </div>
-          <div class="metric-card wide">
-            <span>Grounding</span>
-            <strong id="groundingMetric">Food and Hospitality</strong>
+
+          <div class="wizard-progress" aria-label="Wizard steps">
+            <button type="button" class="wizard-progress__step is-active" data-step-target="1">
+              <span>01</span>
+              <small>Business idea</small>
+            </button>
+            <button type="button" class="wizard-progress__step" data-step-target="2">
+              <span>02</span>
+              <small>Industry</small>
+            </button>
+            <button type="button" class="wizard-progress__step" data-step-target="3">
+              <span>03</span>
+              <small>Personality</small>
+            </button>
+            <button type="button" class="wizard-progress__step" data-step-target="4">
+              <span>04</span>
+              <small>Audience</small>
+            </button>
+          </div>
+
+          <form id="brandForm" class="wizard-form">
+            <section class="wizard-step is-active" data-step="1">
+              <label class="field-label" for="description">What is your business idea?</label>
+              <textarea
+                id="description"
+                name="description"
+                rows="7"
+                placeholder="Describe the product, customer, transformation, and market opportunity."
+              >A minimalist cafe in Dubai for founders who want quiet meetings, excellent coffee, and a refined local atmosphere.</textarea>
+              <p class="field-help">
+                Describe what you sell, who it is for, and why it should matter.
+              </p>
+            </section>
+
+            <section class="wizard-step" data-step="2" aria-hidden="true">
+              <div class="field-label">Choose industry</div>
+              <div class="choice-grid" data-choice-group="industry">
+                <button type="button" class="choice-pill is-selected" data-value="SaaS">SaaS</button>
+                <button type="button" class="choice-pill" data-value="Food & Hospitality">Food & Hospitality</button>
+                <button type="button" class="choice-pill" data-value="Ecommerce">Ecommerce</button>
+                <button type="button" class="choice-pill" data-value="Fashion">Fashion</button>
+                <button type="button" class="choice-pill" data-value="Agency">Agency</button>
+                <button type="button" class="choice-pill" data-value="Healthcare">Healthcare</button>
+                <button type="button" class="choice-pill" data-value="Real Estate">Real Estate</button>
+              </div>
+            </section>
+
+            <section class="wizard-step" data-step="3" aria-hidden="true">
+              <div class="field-label">Choose brand personality</div>
+              <div class="choice-grid" data-choice-group="personality">
+                <button type="button" class="choice-pill is-selected" data-value="Luxury">Luxury</button>
+                <button type="button" class="choice-pill" data-value="Bold">Bold</button>
+                <button type="button" class="choice-pill" data-value="Friendly">Friendly</button>
+                <button type="button" class="choice-pill" data-value="Minimal">Minimal</button>
+                <button type="button" class="choice-pill" data-value="Corporate">Corporate</button>
+                <button type="button" class="choice-pill" data-value="Futuristic">Futuristic</button>
+              </div>
+            </section>
+
+            <section class="wizard-step" data-step="4" aria-hidden="true">
+              <div class="field-label">Choose audience</div>
+              <div class="choice-grid" data-choice-group="audience">
+                <button type="button" class="choice-pill is-selected" data-value="Gen Z">Gen Z</button>
+                <button type="button" class="choice-pill" data-value="Professionals">Professionals</button>
+                <button type="button" class="choice-pill" data-value="Families">Families</button>
+                <button type="button" class="choice-pill" data-value="B2B Clients">B2B Clients</button>
+                <button type="button" class="choice-pill" data-value="High-end Buyers">High-end Buyers</button>
+              </div>
+            </section>
+
+            <div class="wizard-footer">
+              <button type="button" class="button button--ghost" id="prevStepButton">Back</button>
+              <div class="wizard-footer__actions">
+                <span class="wizard-hint">Refined prompts create stronger identities.</span>
+                <button type="button" class="button button--secondary" id="nextStepButton">Continue</button>
+                <button type="submit" class="button button--glow" id="generateButton">
+                  <span>Generate Brand Identity</span>
+                  <span class="button-orb" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <aside class="sidebar-panel glass-panel" aria-label="AI session analytics">
+          <div class="section-heading section-heading--compact">
+            <p class="eyebrow">AI Session</p>
+            <h2>Premium generation telemetry.</h2>
+          </div>
+
+          <div class="sidebar-stack">
+            <article class="metric-tile">
+              <span>Token usage</span>
+              <strong id="tokenMetric">0</strong>
+              <small>Live estimate from the latest generation.</small>
+            </article>
+
+            <article class="metric-tile">
+              <span>Generation speed</span>
+              <strong id="speedMetric">—</strong>
+              <small>Measured from request to identity output.</small>
+            </article>
+
+            <article class="metric-tile">
+              <span>AI confidence score</span>
+              <strong id="confidenceMetric">92%</strong>
+              <small>Confidence based on input clarity and market fit.</small>
+            </article>
+
+            <article class="metric-tile">
+              <span>Brand score meter</span>
+              <div class="meter">
+                <div class="meter__bar" id="brandScoreBar"></div>
+              </div>
+              <strong id="brandScoreText">88 / 100</strong>
+            </article>
+
+            <article class="sidebar-note">
+              <p class="eyebrow">Signal</p>
+              <p id="sanityLog">Contrast checks passed. Identity system is ready for presentation.</p>
+            </article>
           </div>
         </aside>
       </section>
 
-      <section class="preview-panel" aria-label="Generated brand preview">
-        <div class="brand-toolbar">
-          <div>
-            <p class="overline">Live Preview</p>
-            <h2 id="brandName">Safa Table</h2>
-          </div>
-          <div class="swatches" aria-label="Generated color palette">
-            <span id="primarySwatch"></span>
-            <span id="secondarySwatch"></span>
-            <span id="accentSwatch"></span>
-          </div>
+      <section class="generation-panel glass-panel" id="generationPanel" aria-labelledby="generationTitle">
+        <div class="section-heading section-heading--compact">
+          <p class="eyebrow">Live AI Generation</p>
+          <h2 id="generationTitle">Watch Brand Engine build your system.</h2>
+          <p>Each layer appears in sequence to make the process feel transparent, premium, and trustworthy.</p>
         </div>
 
-        <div class="bento-grid">
-          <article class="mock-homepage" id="mockHomepage">
-            <div class="mock-nav">
-              <strong id="mockBrandName">Safa Table</strong>
-              <span>Launch</span>
-            </div>
-            <div class="mock-hero">
-              <p class="eyebrow">Generated Brand System</p>
-              <h3 id="mockHeadline">A sharper first impression for a faster launch.</h3>
-              <p id="mockTone">The voice is precise, warm, and commercially confident.</p>
-              <button id="mockButton">Start the story</button>
+        <div class="generation-list" id="generationList">
+          <article class="generation-step" data-progress-step="0">
+            <span class="generation-step__icon"></span>
+            <div>
+              <strong>Analyzing market positioning...</strong>
+              <p>Mapping the category, audience, and whitespace opportunity.</p>
             </div>
           </article>
-
-          <article class="strategy-card">
-            <p class="overline">30-Day Social Pillars</p>
-            <ol id="strategyList"></ol>
+          <article class="generation-step" data-progress-step="1">
+            <span class="generation-step__icon"></span>
+            <div>
+              <strong>Generating premium brand name...</strong>
+              <p>Crafting a memorable identity with strategic tension.</p>
+            </div>
           </article>
-
-          <article class="tone-card">
-            <p class="overline">Voice Guide</p>
-            <p id="toneGuide">The voice is precise, warm, and commercially confident.</p>
+          <article class="generation-step" data-progress-step="2">
+            <span class="generation-step__icon"></span>
+            <div>
+              <strong>Building visual identity...</strong>
+              <p>Calibrating palette, typography, and mood direction.</p>
+            </div>
           </article>
-
-          <article class="sanity-card">
-            <p class="overline">Sanity Log</p>
-            <p id="sanityLog">Contrast checks passed.</p>
+          <article class="generation-step" data-progress-step="3">
+            <span class="generation-step__icon"></span>
+            <div>
+              <strong>Writing launch content...</strong>
+              <p>Turning positioning into sharp messaging and copy.</p>
+            </div>
+          </article>
+          <article class="generation-step" data-progress-step="4">
+            <span class="generation-step__icon"></span>
+            <div>
+              <strong>Creating social strategy...</strong>
+              <p>Turning identity into a 30-day content rhythm.</p>
+            </div>
           </article>
         </div>
       </section>
+
+      <section class="dashboard-shell" id="dashboard" aria-labelledby="dashboardTitle">
+        <div class="section-heading dashboard-heading">
+          <div>
+            <p class="eyebrow">Results Dashboard</p>
+            <h2 id="dashboardTitle">A complete premium brand identity system.</h2>
+          </div>
+          <p class="dashboard-summary">
+            A realistic founder-facing dashboard with strategy, visual direction, launch content, and positioning in one view.
+          </p>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="dashboard-card reveal-card">
+            <p class="eyebrow">Brand Core</p>
+            <h3 id="brandNameCard">Safa Table</h3>
+            <p class="card-kicker" id="taglineOutput">A sharper first impression for a faster launch.</p>
+            <p id="missionOutput">
+              Build a refined, trustworthy brand that turns the first encounter into long-term preference.
+            </p>
+          </article>
+
+          <article class="dashboard-card reveal-card">
+            <p class="eyebrow">Voice Guide</p>
+            <h3>Tone Description</h3>
+            <p id="toneGuide">
+              The voice is precise, warm, and commercially confident.
+            </p>
+            <div class="message-style">
+              <span>Messaging style</span>
+              <strong id="messagingStyleOutput">Concise, premium, persuasive, and human.</strong>
+            </div>
+          </article>
+
+          <article class="dashboard-card reveal-card">
+            <p class="eyebrow">Visual Identity</p>
+            <h3>Palette & Direction</h3>
+            <div class="palette-row">
+              <div class="palette-swatch">
+                <span class="palette-dot" id="primaryPaletteDot"></span>
+                <div>
+                  <small>Primary</small>
+                  <strong id="primaryPaletteText">#2F2A24</strong>
+                </div>
+              </div>
+              <div class="palette-swatch">
+                <span class="palette-dot" id="secondaryPaletteDot"></span>
+                <div>
+                  <small>Secondary</small>
+                  <strong id="secondaryPaletteText">#F5F5F7</strong>
+                </div>
+              </div>
+              <div class="palette-swatch">
+                <span class="palette-dot" id="accentPaletteDot"></span>
+                <div>
+                  <small>Accent</small>
+                  <strong id="accentPaletteText">#8A3B1D</strong>
+                </div>
+              </div>
+            </div>
+            <div class="identity-meta">
+              <p><span>Font pairing</span><strong id="fontPairingOutput">Cormorant Garamond + Manrope</strong></p>
+              <p><span>Moodboard</span><strong id="moodboardOutput">Quiet luxury, elevated hospitality, editorial warmth.</strong></p>
+            </div>
+          </article>
+
+          <article class="dashboard-card reveal-card">
+            <p class="eyebrow">Launch Content</p>
+            <h3>Go-to-market copy</h3>
+            <div class="content-stack">
+              <div>
+                <span>Launch caption</span>
+                <p id="launchCaptionOutput">Generate a brand identity to create a launch-ready caption.</p>
+              </div>
+              <div>
+                <span>Brand bio</span>
+                <p id="brandBioOutput">Generate a brand identity to create a short bio.</p>
+              </div>
+              <div>
+                <span>Ad headline</span>
+                <p id="adHeadlineOutput">Sharper brand perception, generated in minutes.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="dashboard-card reveal-card">
+            <p class="eyebrow">30 Day Social Content Plan</p>
+            <h3>Content ideas</h3>
+            <ol id="strategyList" class="strategy-list"></ol>
+          </article>
+
+          <article class="dashboard-card reveal-card">
+            <p class="eyebrow">Competitor Positioning</p>
+            <h3>How this brand stands out</h3>
+            <p id="positioningOutput">
+              Generates a clearer premium point of view, faster launch messaging, and stronger trust cues than generic competitors.
+            </p>
+            <ul id="taglineListOutput" class="positioning-list">
+              <li>Generate a brand identity to create positioning bullets.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="actions-panel glass-panel" id="actions" aria-labelledby="actionsTitle">
+        <div class="section-heading section-heading--compact">
+          <p class="eyebrow">Actions</p>
+          <h2 id="actionsTitle">Move from concept to launch-ready assets.</h2>
+        </div>
+
+        <div class="action-button-grid">
+          <button type="button" class="action-button" id="exportPdfButton">Export PDF</button>
+          <button type="button" class="action-button" id="copyAllButton">Copy All</button>
+          <button type="button" class="action-button" id="regenerateButton">Regenerate</button>
+          <button type="button" class="action-button" id="saveBrandButton">Save Brand</button>
+          <button type="button" class="action-button action-button--primary" id="createLogoButton">Create Logo</button>
+        </div>
+      </section>
     </main>
+
+    <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
 
     <script src="/static/app.js"></script>
   </body>

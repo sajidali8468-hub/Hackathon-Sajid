@@ -2,12 +2,13 @@ const form = document.querySelector("#brandForm");
 const description = document.querySelector("#description");
 const generateButton = document.querySelector("#generateButton");
 
+let currentBrand = null;
+
 const nodes = {
   brandName: document.querySelector("#brandName"),
   mockBrandName: document.querySelector("#mockBrandName"),
   mockHeadline: document.querySelector("#mockHeadline"),
   mockTone: document.querySelector("#mockTone"),
-  mockButton: document.querySelector("#mockButton"),
   mockHomepage: document.querySelector("#mockHomepage"),
   toneGuide: document.querySelector("#toneGuide"),
   strategyList: document.querySelector("#strategyList"),
@@ -18,6 +19,12 @@ const nodes = {
   primarySwatch: document.querySelector("#primarySwatch"),
   secondarySwatch: document.querySelector("#secondarySwatch"),
   accentSwatch: document.querySelector("#accentSwatch"),
+  buildBioButton: document.querySelector("#buildBioButton"),
+  buildCaptionButton: document.querySelector("#buildCaptionButton"),
+  buildTaglinesButton: document.querySelector("#buildTaglinesButton"),
+  brandBioOutput: document.querySelector("#brandBioOutput"),
+  launchCaptionOutput: document.querySelector("#launchCaptionOutput"),
+  taglineListOutput: document.querySelector("#taglineListOutput"),
 };
 
 function loadFonts(typography) {
@@ -36,7 +43,81 @@ function loadFonts(typography) {
   document.head.appendChild(link);
 }
 
+function getGroundingLabel(brand) {
+  return brand?.grounding?.profile || "General Founder Brand";
+}
+
+function getFirstSentence(text) {
+  if (!text) return "";
+  const [first] = text.split(".").filter(Boolean);
+  return first ? `${first.trim()}.` : text;
+}
+
+function toLowerStart(text) {
+  if (!text) return "";
+  return text.charAt(0).toLowerCase() + text.slice(1);
+}
+
+function buildBrandBio(brand) {
+  const focus = brand.social_strategy?.[0] || "clear positioning";
+  return `${brand.brand_name} is a ${getGroundingLabel(brand).toLowerCase()} concept designed to make a stronger first impression. ${getFirstSentence(brand.tone)} The identity is built around ${toLowerStart(focus)}, giving the business a brand system that feels distinctive, useful, and ready to launch.`;
+}
+
+function buildLaunchCaption(brand) {
+  const proof = brand.social_strategy?.[1] || "clear customer insight";
+  return `Introducing ${brand.brand_name} — ${brand.tagline} Built with a ${toLowerStart(getFirstSentence(brand.tone).replace(/\.$/, ""))} voice, a grounded palette, and a sharper point of view. Start with ${toLowerStart(proof)} and turn attention into trust.`;
+}
+
+function buildTaglines(brand) {
+  const brandWord = brand.brand_name.split(" ")[0];
+  return [
+    brand.tagline,
+    `${brandWord} for sharper brand moments.`,
+    `Clear positioning for ${getGroundingLabel(brand).toLowerCase()}.`,
+    "A cleaner story, a stronger first impression.",
+  ];
+}
+
+function renderBrandBio(brand) {
+  if (nodes.brandBioOutput) {
+    nodes.brandBioOutput.textContent = buildBrandBio(brand);
+  }
+}
+
+function renderLaunchCaption(brand) {
+  if (nodes.launchCaptionOutput) {
+    nodes.launchCaptionOutput.textContent = buildLaunchCaption(brand);
+  }
+}
+
+function renderTaglines(brand) {
+  if (!nodes.taglineListOutput) return;
+
+  nodes.taglineListOutput.innerHTML = "";
+  buildTaglines(brand).forEach((tagline) => {
+    const item = document.createElement("li");
+    item.textContent = tagline;
+    nodes.taglineListOutput.appendChild(item);
+  });
+}
+
+function renderExtraOutputs(brand) {
+  renderBrandBio(brand);
+  renderLaunchCaption(brand);
+  renderTaglines(brand);
+}
+
+function withBrand(callback, emptyMessage) {
+  if (!currentBrand) {
+    if (nodes.sanityLog) nodes.sanityLog.textContent = emptyMessage;
+    return;
+  }
+  callback(currentBrand);
+}
+
 function applyBrand(brand) {
+  currentBrand = brand;
+
   const palette = brand.palette;
   const typography = brand.typography;
   loadFonts(typography);
@@ -54,7 +135,7 @@ function applyBrand(brand) {
   if (nodes.toneGuide) nodes.toneGuide.textContent = brand.tone;
   if (nodes.latencyMetric) nodes.latencyMetric.textContent = `${brand.latency_ms || 0} ms`;
   if (nodes.tokenMetric) nodes.tokenMetric.textContent = brand.token_count || 0;
-  if (nodes.groundingMetric) nodes.groundingMetric.textContent = brand.grounding?.profile || "General Founder Brand";
+  if (nodes.groundingMetric) nodes.groundingMetric.textContent = getGroundingLabel(brand);
   if (nodes.sanityLog) {
     nodes.sanityLog.textContent = brand.sanity_log?.length ? brand.sanity_log.join(" ") : "Contrast checks passed.";
   }
@@ -71,6 +152,8 @@ function applyBrand(brand) {
       nodes.strategyList.appendChild(item);
     });
   }
+
+  renderExtraOutputs(brand);
 }
 
 async function fetchCurrentBrand() {
@@ -80,6 +163,24 @@ async function fetchCurrentBrand() {
   } catch {
     // Initial preview remains usable when no server state exists.
   }
+}
+
+if (nodes.buildBioButton) {
+  nodes.buildBioButton.addEventListener("click", () => {
+    withBrand(renderBrandBio, "Generate a brand identity first to create a brand bio.");
+  });
+}
+
+if (nodes.buildCaptionButton) {
+  nodes.buildCaptionButton.addEventListener("click", () => {
+    withBrand(renderLaunchCaption, "Generate a brand identity first to create a launch caption.");
+  });
+}
+
+if (nodes.buildTaglinesButton) {
+  nodes.buildTaglinesButton.addEventListener("click", () => {
+    withBrand(renderTaglines, "Generate a brand identity first to spin tagline variations.");
+  });
 }
 
 if (form) {
@@ -98,7 +199,9 @@ if (form) {
       if (!response.ok) throw new Error(payload.detail || "Unable to generate a brand identity.");
       applyBrand(payload);
     } catch (error) {
-      if (nodes.sanityLog) nodes.sanityLog.textContent = error.message;
+      if (nodes.sanityLog) {
+        nodes.sanityLog.textContent = error.message || "Something went wrong.";
+      }
     } finally {
       generateButton.disabled = false;
       generateButton.querySelector("span").textContent = "Generate Identity";

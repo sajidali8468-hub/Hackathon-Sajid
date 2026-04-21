@@ -27,5 +27,5 @@
   "source": "fallback-demo",
   "token_count": 0,
   "sanity_log": [],
-  "latency_ms": 2
+  "latency_ms": 1
 }
