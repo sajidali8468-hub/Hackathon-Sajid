@@ -341,13 +341,9 @@ with left:
             st.session_state.generation_steps = generation_steps("error", str(exc))
             st.error(f"Generation failed: {exc}")
 
-    action_cols = st.columns(3, gap="small")
-    with action_cols[0]:
-        bio_clicked = st.button("Write Brand Bio", use_container_width=True)
-    with action_cols[1]:
-        caption_clicked = st.button("Create Launch Caption", use_container_width=True)
-    with action_cols[2]:
-        taglines_clicked = st.button("Spin Taglines", use_container_width=True)
+    bio_clicked = st.button("Write Brand Bio", use_container_width=True)
+    caption_clicked = st.button("Create Launch Caption", use_container_width=True)
+    taglines_clicked = st.button("Spin Taglines", use_container_width=True)
 
     if bio_clicked:
         outputs = dict(st.session_state.outputs)
