@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from html import escape
 import os
 from time import perf_counter
 
@@ -35,7 +36,7 @@ def render_css(brand: dict | None = None) -> None:
         "typography",
         {"heading": "Cormorant Garamond", "body": "Manrope"},
     )
-    st.markdown(
+    st.html(
         f"""
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -181,8 +182,7 @@ def render_css(brand: dict | None = None) -> None:
             border-radius: 50%;
           }}
         </style>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
 
@@ -216,22 +216,21 @@ def generate(description: str) -> dict:
 
 
 def render_mock_homepage(brand: dict) -> None:
-    st.markdown(
+    st.html(
         f"""
         <section class="mock-homepage">
           <div class="mock-nav">
-            <strong>{brand["brand_name"]}</strong>
+            <strong>{escape(brand["brand_name"])}</strong>
             <span>Launch</span>
           </div>
           <div class="mock-hero">
             <p class="overline">Generated Brand System</p>
-            <h2>{brand["tagline"]}</h2>
-            <p>{brand["tone"]}</p>
+            <h2>{escape(brand["tagline"])}</h2>
+            <p>{escape(brand["tone"])}</p>
             <div class="mock-cta">Start the story</div>
           </div>
         </section>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
 
@@ -258,11 +257,10 @@ with st.sidebar:
 left, right = st.columns([0.72, 1.28], gap="large")
 
 with left:
-    st.markdown('<p class="overline">Prompt-to-Product</p>', unsafe_allow_html=True)
-    st.markdown('<h1 class="hero-title">Brand Engine</h1>', unsafe_allow_html=True)
-    st.markdown(
+    st.html('<p class="overline">Prompt-to-Product</p>')
+    st.html('<h1 class="hero-title">Brand Engine</h1>')
+    st.html(
         '<p class="lede">Describe a startup and generate a grounded visual identity with palette, typography, tone, and social strategy.</p>',
-        unsafe_allow_html=True,
     )
 
     with st.form("brand_form"):
@@ -287,35 +285,48 @@ with left:
 with right:
     brand = st.session_state.brand
     palette = brand["palette"]
-    st.markdown('<p class="overline">Live Preview</p>', unsafe_allow_html=True)
-    st.markdown(f'<h2 class="brand-heading">{brand["brand_name"]}</h2>', unsafe_allow_html=True)
-    st.markdown(
+    st.html('<p class="overline">Live Preview</p>')
+    st.html(f'<h2 class="brand-heading">{escape(brand["brand_name"])}</h2>')
+    st.html(
         f"""
         <div class="swatch-row">
           <div class="swatch" style="background:{palette["primary"]}"></div>
           <div class="swatch" style="background:{palette["secondary"]}"></div>
           <div class="swatch" style="background:{palette["accent"]}"></div>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
     preview_col, detail_col = st.columns([1.25, 0.75], gap="medium")
     with preview_col:
         render_mock_homepage(brand)
     with detail_col:
-        st.markdown('<div class="bento">', unsafe_allow_html=True)
-        st.markdown('<p class="overline">30-Day Social Pillars</p>', unsafe_allow_html=True)
-        for index, pillar in enumerate(brand["social_strategy"], start=1):
-            st.write(f"{index}. {pillar}")
-        st.markdown("</div>", unsafe_allow_html=True)
+        strategy_items = "".join(
+            f"<li>{escape(pillar)}</li>" for pillar in brand["social_strategy"]
+        )
+        st.html(
+            f"""
+            <section class="bento">
+              <p class="overline">30-Day Social Pillars</p>
+              <ol>{strategy_items}</ol>
+            </section>
+            """
+        )
 
-        st.markdown('<div class="bento" style="margin-top: .85rem;">', unsafe_allow_html=True)
-        st.markdown('<p class="overline">Grounding</p>', unsafe_allow_html=True)
-        st.write(brand.get("grounding", {}).get("profile", "General Founder Brand"))
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.html(
+            f"""
+            <section class="bento" style="margin-top: .85rem;">
+              <p class="overline">Grounding</p>
+              <p>{escape(brand.get("grounding", {}).get("profile", "General Founder Brand"))}</p>
+            </section>
+            """
+        )
 
-        st.markdown('<div class="bento" style="margin-top: .85rem;">', unsafe_allow_html=True)
-        st.markdown('<p class="overline">Voice Guide</p>', unsafe_allow_html=True)
-        st.write(brand["tone"])
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.html(
+            f"""
+            <section class="bento" style="margin-top: .85rem;">
+              <p class="overline">Voice Guide</p>
+              <p>{escape(brand["tone"])}</p>
+            </section>
+            """
+        )
