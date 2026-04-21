@@ -1,0 +1,31 @@
+{
+  "brand_name": "Safa Table",
+  "tagline": "A sharper first impression for a faster launch.",
+  "palette": {
+    "primary": "#2F2A24",
+    "secondary": "#F5F5F7",
+    "accent": "#8A3B1D"
+  },
+  "typography": {
+    "heading": "Cormorant Garamond",
+    "body": "Manrope"
+  },
+  "tone": "The voice is precise, warm, and commercially confident. It explains value quickly while leaving enough texture to feel crafted rather than templated.",
+  "social_strategy": [
+    "Founder story and category point of view",
+    "Customer problem breakdowns",
+    "Behind-the-scenes product or service rituals",
+    "Proof posts with testimonials, numbers, or demos",
+    "Educational tips that make the buyer feel smarter"
+  ],
+  "grounding": {
+    "profile": "Food and Hospitality",
+    "psychology": "Warm coral, sunlit yellow, teal, and approachable neutrals communicate friendliness and belonging.",
+    "color_guidance": "Use warm neutrals or appetite-friendly accents balanced with a clean premium surface.",
+    "archetype": "The Everyperson: welcoming, sensory, and easy to trust."
+  },
+  "source": "fallback-demo",
+  "token_count": 0,
+  "sanity_log": [],
+  "latency_ms": 2
+}

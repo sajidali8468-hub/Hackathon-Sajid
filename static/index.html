@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Brand Engine</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="input-panel" aria-labelledby="appTitle">
+        <div>
+          <p class="overline">Prompt-to-Product</p>
+          <h1 id="appTitle">Brand Engine</h1>
+          <p class="lede">Describe a startup and generate a grounded visual identity with palette, typography, tone, and social strategy.</p>
+        </div>
+
+        <form id="brandForm" class="prompt-form">
+          <label for="description">Business description</label>
+          <textarea id="description" name="description" rows="8">A minimalist cafe in Dubai for founders who want quiet meetings, excellent coffee, and a refined local atmosphere.</textarea>
+          <button type="submit" id="generateButton">
+            <span>Generate Identity</span>
+            <span class="button-dot" aria-hidden="true"></span>
+          </button>
+        </form>
+
+        <aside class="metrics-grid" aria-label="Generation metrics">
+          <div class="metric-card">
+            <span>Latency</span>
+            <strong id="latencyMetric">0 ms</strong>
+          </div>
+          <div class="metric-card">
+            <span>Tokens</span>
+            <strong id="tokenMetric">0</strong>
+          </div>
+          <div class="metric-card wide">
+            <span>Grounding</span>
+            <strong id="groundingMetric">Food and Hospitality</strong>
+          </div>
+        </aside>
+      </section>
+
+      <section class="preview-panel" aria-label="Generated brand preview">
+        <div class="brand-toolbar">
+          <div>
+            <p class="overline">Live Preview</p>
+            <h2 id="brandName">Safa Table</h2>
+          </div>
+          <div class="swatches" aria-label="Generated color palette">
+            <span id="primarySwatch"></span>
+            <span id="secondarySwatch"></span>
+            <span id="accentSwatch"></span>
+          </div>
+        </div>
+
+        <div class="bento-grid">
+          <article class="mock-homepage" id="mockHomepage">
+            <div class="mock-nav">
+              <strong id="mockBrandName">Safa Table</strong>
+              <span>Launch</span>
+            </div>
+            <div class="mock-hero">
+              <p class="eyebrow">Generated Brand System</p>
+              <h3 id="mockHeadline">A sharper first impression for a faster launch.</h3>
+              <p id="mockTone">The voice is precise, warm, and commercially confident.</p>
+              <button id="mockButton">Start the story</button>
+            </div>
+          </article>
+
+          <article class="strategy-card">
+            <p class="overline">30-Day Social Pillars</p>
+            <ol id="strategyList"></ol>
+          </article>
+
+          <article class="tone-card">
+            <p class="overline">Voice Guide</p>
+            <p id="toneGuide">The voice is precise, warm, and commercially confident.</p>
+          </article>
+
+          <article class="sanity-card">
+            <p class="overline">Sanity Log</p>
+            <p id="sanityLog">Contrast checks passed.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
